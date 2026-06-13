@@ -1,14 +1,27 @@
-use anyhow::{Context, Result};
+use anyhow::{Context, Ok, Result};
 use clap::Parser;
 use std::{
     fs::File,
-    io::{self, BufRead, BufReader, BufWriter, Read, Write},
+    io::{self, BufRead, BufReader, BufWriter, Write},
 };
 
 #[derive(Parser)]
 struct Cli {
     pattern: String,
     path: std::path::PathBuf,
+}
+
+// Print found pattern matches
+fn find_matches(reader: impl BufRead, writer: &mut impl Write, pattern: &str) -> Result<()> {
+    for line in reader.lines() {
+        let line = line?;
+
+        if line.contains(pattern) {
+            writeln!(writer, "{line}")?;
+        }
+    }
+
+    Ok(())
 }
 
 fn main() -> Result<()> {
@@ -23,15 +36,9 @@ fn main() -> Result<()> {
     let reader = BufReader::new(f);
     let mut writer = BufWriter::new(io::stdout().lock());
 
-    // Write found lines
-    for line in reader.lines() {
-        let line =
-            line.with_context(|| format!("Could not read line from `{}`", args.path.display()))?;
-
-        if line.contains(&args.pattern) {
-            writeln!(writer, "{line}")?;
-        }
-    }
+    // Find and write found matches
+    find_matches(reader, &mut writer, &args.pattern)
+        .with_context(|| format!("Could not write matches to stdout"))?;
 
     Ok(())
 }
