@@ -1,7 +1,14 @@
 [package]
 name = "grab"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2024"
+license = "MIT"
+description = "Simple `grep` clone made in Rust."
+readme = "README.md"
+homepage = "https://github.com/marcs-sus/grab"
+repository = "https://github.com/marcs-sus/grab"
+keywords = ["cli", "search", "demo"]
+categories = ["command-line-utilities"]
 
 [dependencies]
 clap = { version = "^4.0", features = ["derive"] }
@@ -11,4 +18,3 @@ anyhow = "^1.0"
 assert_cmd = "^2.0.14"
 predicates = "^3.1.0"
 assert_fs = "^1.1.1"
-
